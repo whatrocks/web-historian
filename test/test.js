@@ -5,6 +5,7 @@ var archive = require("../helpers/archive-helpers");
 var path = require('path');
 var supertest = require('supertest');
 var initialize = require("../web/initialize.js");
+var httpRequest = require('http-request');
 
 initialize(path.join(__dirname, '/testdata'));
 
@@ -81,8 +82,8 @@ describe("archive helpers", function(){
     it("should read urls from sites.txt", function (done){
       var urlArray = ["example1.com", "example2.com"];
       fs.writeFileSync(archive.paths.list, urlArray.join("\n"));
-
       archive.readListOfUrls(function(urls){
+        urls = urls.split('\n');
         expect(urls).to.deep.equal(urlArray);
         done();
       });
@@ -149,6 +150,8 @@ describe("archive helpers", function(){
 
       // Ugly hack to wait for all downloads to finish.
       setTimeout(function () {
+        console.log('urlArray: ' , urlArray);
+        console.log('directory contents: ', fs.readdirSync(archive.paths.archivedSites));
         expect(fs.readdirSync(archive.paths.archivedSites)).to.deep.equal(urlArray);
         done();
       }, 25);
