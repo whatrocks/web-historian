@@ -1,7 +1,10 @@
 var http = require("http");
 var handler = require("./request-handler");
 var initialize = require("./initialize.js");
+var CronJob = require('cron').CronJob;
+var cron = require('../workers/htmlfetcher');
 
+cron.cron();
 // Why do you think we have this here?
 // HINT: It has to do with what's in .gitignore
 initialize("./archives");
