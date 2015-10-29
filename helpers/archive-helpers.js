@@ -58,7 +58,7 @@ exports.isUrlInList = function(target, callback) {
 };
 
 exports.addUrlToList = function(url, callback) {
-	fs.writeFile(exports.paths.list, url, 'utf8', function() {
+	fs.appendFile(exports.paths.list, url + '\n', 'utf8', function() {
 		callback();
 	});
 };
