@@ -10,11 +10,15 @@ exports.headers = headers = {
   'Content-Type': "text/html"
 };
 
-exports.serveAssets = function(res, asset, callback) {
+exports.serveAssets = function(res, asset, headers, callback) {
   fs.readFile(__dirname + asset, function(err, data) {
-    callback(res, data);
+    var extension = path.extname(__dirname + asset);
+    console.log("extension: ", extension);
+    headers['Content-Type'] = 'text/' + extension.slice(1); 
+    callback(res, headers, data);
   });
 };
+
 
 exports.sendResponse = function(url ) {
 
