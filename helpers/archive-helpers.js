@@ -65,10 +65,12 @@ exports.addUrlToList = function(url, callback) {
 
 exports.isUrlArchived = function(target, callback) {
 	var isInDirectory = false;
-	
+	console.log('ran')
 	fs.readdir(exports.paths.archivedSites, function(err, files) {
 		files.forEach(function(file) {
-			if (file === ( exports.paths.archivedSites + "/" + target )) {
+			// console.log("file:", file);
+			// console.log("target:", exports.paths.archivedSites + "/" + target);
+			if (file === target ) {
 				isInDirectory = true;
 			}
 		});
@@ -80,7 +82,7 @@ exports.downloadUrls = function(urlArray) {
 	urlArray.forEach(function(url) {	
 	  httpRequest.get({
 	    url: url
-	    },  "testdata/sites/" + url, function(err, res) {
+	    }, '../archives/sites/' + url, function(err, res) {
 	      if (err) {
 	        console.error(err);
 	        return;
