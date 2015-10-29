@@ -6,10 +6,10 @@ var httpRequest = require('http-request')
 // require more modules/folders here!
 
 
-var actions = {
-  'GET': 1,//handle get,
-  'POST': 2//handle post
-};
+// var actions = {
+//   'GET': 1//handle get,
+//   'POST': 2//handle post
+// };
 
 var endpoints = {
   // '/' : helpers.serveAssets(res, '/public/index.html', function(res, data) {
@@ -20,7 +20,17 @@ var endpoints = {
 exports.handleRequest = function (req, res) {
   var headers = helpers.headers;
   var statusCode = 200;
-
+  // if (req.method === 'POST') {
+  //   archive.isUrlInList(req.url, function(isInList) {
+  //     if (isInList) {
+  //       //do something
+  //     } else {
+  //       archive.addUrlToList(req.url, function() {
+  //         //send to loading.html
+  //       });
+  //     }
+  //   });
+  // }
   // console.log("we are checking this url: ", req.url);
   // archive.isUrlInList(req.url, function(isInList) {
   //   if (isInList) {
@@ -54,20 +64,25 @@ exports.handleRequest = function (req, res) {
 
   // console.log(req.url)
   // console.log('archive siteAssets', archive.paths.archivedSites)
+  // if (req.method === 'GET') {
+    if (req.url === '/') {
+      helpers.serveAssets(res, '/public/index.html', headers, function(res, headers, data) {
+        console.log('yes');
+        res.writeHead(statusCode, headers);
+        res.end(data);
+      });
+    }
+  //   } else {
+  //     helpers.serveAssets(res, req.url, headers, function(res, headers, data) {
+  //       console.log('yes');
+  //       res.writeHead(statusCode, headers);
+  //       res.end(data);
+  //     });
+  //   }
+  // }
 
-  if (req.url === '/') {
-    helpers.serveAssets(res, '/public/index.html', headers, function(res, headers, data) {
-      console.log('yes');
-      res.writeHead(statusCode, headers);
-      res.end(data);
-    });
-  } else {
-    helpers.serveAssets(res, req.url, headers, function(res, headers, data) {
-      console.log('yes');
-      res.writeHead(statusCode, headers);
-      res.end(data);
-    });
-  }
+  // res.writeHead(statusCode, headers);
+  // res.end();
   //else {
   //   // console.log(__dirname + '/archives/sites' + req.url)
   //   helpers.serveAssets(res, archive.paths.archivedSites + req.url, function(res, data) {
