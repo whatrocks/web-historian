@@ -41,10 +41,10 @@ describe("server", function() {
         fs.writeFileSync(fixturePath, "google");
 
         request
-          .get("/" + fixtureName)
+          .get("/sites/" + fixtureName)
           .expect(200, /google/, function (err) {
-            fs.unlinkSync(fixturePath);
             done(err);
+            // fs.unlinkSync(fixturePath);
           });
       });
 
