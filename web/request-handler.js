@@ -55,8 +55,11 @@ exports.handleRequest = function (req, res) {
                 });
 
               } else {
-                // bot has not yet downloaded the page
-                // send them to the waiting page again
+                //serve waiting paige
+                helpers.serveAssets(res, '/public/loading.html', headers, function(res, headers, data) {
+                  res.writeHead(statusCode, headers);
+                  res.end(data);        
+                });
               }
             });
 
@@ -65,8 +68,8 @@ exports.handleRequest = function (req, res) {
             archive.addUrlToList(formEntry, function() {
 
               // console.log("Not in list, adding to list");
-              helpers.serveAssets(res, '/public/loading.html', headers, function(res, headers, data) {
-
+              helpers.serveAssets(res, '/public/loading.html', headers, function(res, headers, data) {  
+                statusCode = 302;
                 res.writeHead(statusCode, headers);
                 res.end(data);        
               })
@@ -84,11 +87,57 @@ exports.handleRequest = function (req, res) {
         res.end(data);
       });
     } else {
-      helpers.serveAssets(res, req.url, headers, function(res, headers, data) {
-        res.writeHead(statusCode, headers);
-        res.end(data);
-      });
+      // helpers.serveAssets(res, req.url, headers, function(res, headers, data) {
+        
+        // first check if in the archive
+        // var dir = String.prototype.slice.call(__dirname, 0,  __dirname.length - 4);
+        // fs.readFile(dir + '/archives/sites/' + req.url, function(err, data) {
+        //   if (err) {
+        //     console.log("error");
+        //   } else {
+        //     headers['Content-Type'] = 'text/html';
+        //     res.writeHead(statusCode, headers);
+        //     res.end(data);
+        //   }
+        // });        
+        archive.isUrlArchived(req.url.slice(1), function(isFound) {
+          console.log('!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', req.url.slice(1))
+          if (isFound) {
+              helpers.serveArchivedPage(statusCode, headers, req.url, res);
+              // headers['Content-Type'] = 'text/html';
+              // res.writeHead(statusCode, headers);
+              // res.end(data);
+            } else {
+              archive.isUrlInList(req.url.slice(1), function(isFound) {
+                if (isFound) {
+                    //serve please come back later
+                    helpers.serveWaitingPage(res, '/public/loading.html', headers, statusCode);
+                    // helpers.serveAssets(res, '/public/loading.html', headers, function(res, headers, data) {
+                    //   res.writeHead(statusCode, headers);
+                    //   res.end(data);        
+                    // });
+                  } else {
+                    console.log(String.prototype.slice.call(__dirname, __dirname.length - 6))     
+                    if (String.prototype.slice.call(__dirname, __dirname.length - 6) === 'public') {
+                      console.log('public!!!!!!!!!!!');
+                    }
+                    fs.readFile(__dirname + "/public" +req.url, function(err, data) {   
+                      console.log(__dirname + req.url);        
+                      headers['Content-Type'] = 'text/css';
+
+                      if ( data === null || data === undefined) {
+                        statusCode = 404;
+                        console.log(404);
+                      }
+                      res.writeHead(statusCode, headers);
+                      res.end(data);
+                    });
+                  }
+              });
+            }
+        });
     } 
+    // OPTIONS
   } else {
     res.writeHead(statusCode, headers);
     res.end();

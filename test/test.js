@@ -144,6 +144,13 @@ describe("archive helpers", function(){
   });
 
   describe("#downloadUrls", function () {
+    //
+    //
+    //
+    //was passing if we change the downloadUrls path to this custom path
+    //
+    //
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     it("should download all pending urls in the list", function (done) {
       var urlArray = ["www.example.com", "www.google.com"];
       archive.downloadUrls(urlArray);

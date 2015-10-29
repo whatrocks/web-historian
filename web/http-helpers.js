@@ -23,6 +23,22 @@ exports.sendResponse = function(url ) {
 
 }
 
+exports.serveWaitingPage = function(res, asset, headers, statusCode) {
+  exports.serveAssets(res, asset, headers, function(res, headers, data) {
+    res.writeHead(statusCode, headers);
+    res.end(data);        
+  });
+}
+
+exports.serveArchivedPage = function(statusCode, headers, target, res) {
+  var dir = String.prototype.slice.call(__dirname, 0,  __dirname.length - 4);
+  console.log('dir: ', dir)
+  fs.readFile(dir + '/archives/sites/' + target.slice(1), function(err, data) {                  
+    headers['Content-Type'] = 'text/html';
+    res.writeHead(statusCode, headers);
+    res.end(data);
+  });
+}
   // Write some code here that helps serve up your static files!
   // (Static files are things like html (yours or archived from others...),
   // css, or anything that doesn't change often.)
